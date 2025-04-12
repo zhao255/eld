@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scroll Video Player</title>
+    <title>Smooth Scroll Video Player</title>
     <style>
         * {
             margin: 0;
@@ -56,16 +56,14 @@
         }
 
         .video-container {
-            position: fixed;
+            position: sticky;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            z-index: -1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            z-index: 1;
             overflow: hidden;
+            background-color: #000;
         }
 
         #v0 {
@@ -80,18 +78,9 @@
             object-fit: cover;
         }
 
-        #set-height {
-            position: relative;
-            z-index: 1;
-            /* Height will be set by JavaScript */
-        }
-
-        .content {
-            position: relative;
-            padding: 50px 0;
-            background-color: #fff;
-            color: #333;
-            z-index: 2;
+        .spacer {
+            height: 100vh;
+            width: 100%;
         }
 
         .intro-text {
@@ -104,6 +93,7 @@
             z-index: 2;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
             width: 80%;
+            pointer-events: none;
         }
 
         .intro-text h1 {
@@ -117,6 +107,15 @@
             margin: 0 auto;
         }
 
+        .gallery-section {
+            background-color: #fff;
+            color: #333;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
         .gallery {
             max-width: 1200px;
             margin: 0 auto;
@@ -127,7 +126,6 @@
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 40px;
-            color: #333;
         }
 
         .image-grid {
@@ -196,19 +194,18 @@
     </header>
 
     <div class="video-container">
-        <video id="v0" tabindex="0" autobuffer preload muted>
+        <video id="v0" tabindex="0" preload muted playsinline>
             <source type="video/mp4" src="https://zhao255.github.io/eld/Video%20Project2.mp4">
         </video>
+        <div class="intro-text">
+            <h1></h1>
+            <p></p>
+        </div>
     </div>
 
     <div id="set-height"></div>
 
-    <div class="intro-text">
-        <h1>Experience Smooth Scroll Video</h1>
-        <p>Scroll down to control the video playback. A modern web experience inspired by the latest design trends.</p>
-    </div>
-
-    <div class="content" id="gallery">
+    <div class="gallery-section" id="gallery">
         <div class="gallery">
             <h2>Our Gallery</h2>
             <div class="image-grid">
@@ -239,27 +236,58 @@
     </footer>
 
     <script>
-        var frameNumber = 0, // start video at frame 0
-            // lower numbers = faster playback
-            playbackConst = 500, 
-            // get page height from video duration
-            setHeight = document.getElementById("set-height"), 
-            // select video element         
-            vid = document.getElementById('v0'); 
-
-        // dynamically set the page height according to video length
-        vid.addEventListener('loadedmetadata', function() {
-            setHeight.style.height = Math.floor(vid.duration) * playbackConst + "px";
+        document.addEventListener('DOMContentLoaded', function() {
+            var frameNumber = 0, // start video at frame 0
+                // lower numbers = faster playback
+                playbackConst = 500, 
+                // get page height from video duration
+                setHeight = document.getElementById("set-height"), 
+                // select video element         
+                vid = document.getElementById('v0');
+            
+            const gallerySection = document.querySelector('.gallery-section');
+            
+            // Ensure gallery is initially hidden
+            gallerySection.style.opacity = '0';
+            
+            // dynamically set the page height according to video length
+            vid.addEventListener('loadedmetadata', function() {
+                setHeight.style.height = Math.floor(vid.duration) * playbackConst + "px";
+                console.log("Video duration:", vid.duration, "seconds");
+                console.log("Page height set to:", setHeight.style.height);
+            });
+            
+            // Use requestAnimationFrame for smooth playback
+            function scrollPlay() {  
+                var frameNumber = window.pageYOffset / playbackConst;
+                
+                // Check if we've reached the end of the video
+                if (frameNumber >= vid.duration - 0.1) {
+                    gallerySection.style.opacity = '1';
+                } else {
+                    gallerySection.style.opacity = '0';
+                }
+                
+                // Update video playback position
+                vid.currentTime = frameNumber;
+                
+                // Request next frame
+                window.requestAnimationFrame(scrollPlay);
+            }
+            
+            // Improve video preloading
+            vid.preload = "auto";
+            
+            // Start animation once video can play through
+            vid.addEventListener('canplaythrough', function() {
+                console.log("Video fully loaded and ready for smooth playback");
+                // Start the scroll-based playback
+                window.requestAnimationFrame(scrollPlay);
+            }, { once: true });
+            
+            // Preload the video
+            vid.load();
         });
-
-        // Use requestAnimationFrame for smooth playback
-        function scrollPlay(){  
-            var frameNumber = window.pageYOffset/playbackConst;
-            vid.currentTime = frameNumber;
-            window.requestAnimationFrame(scrollPlay);
-        }
-
-        window.requestAnimationFrame(scrollPlay);
     </script>
 </body>
 </html>
