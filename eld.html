@@ -3,7 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scroll Video Player</title>
+    <title>刀柄組裝過程</title>
+    <!-- Polyfills for cross-browser compatibility -->
+    <script>
+        // requestAnimationFrame polyfill
+        (function() {
+            var lastTime = 0;
+            var vendors = ['ms', 'moz', 'webkit', 'o'];
+            for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+                window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+                window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+                                           || window[vendors[x]+'CancelRequestAnimationFrame'];
+            }
+        
+            if (!window.requestAnimationFrame)
+                window.requestAnimationFrame = function(callback, element) {
+                    var currTime = new Date().getTime();
+                    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+                    var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+                      timeToCall);
+                    lastTime = currTime + timeToCall;
+                    return id;
+                };
+        
+            if (!window.cancelAnimationFrame)
+                window.cancelAnimationFrame = function(id) {
+                    clearTimeout(id);
+                };
+        }());
+
+        // Object.assign polyfill for IE
+        if (typeof Object.assign !== 'function') {
+            Object.assign = function(target) {
+                'use strict';
+                if (target === null || target === undefined) {
+                    throw new TypeError('Cannot convert undefined or null to object');
+                }
+
+                var to = Object(target);
+                for (var index = 1; index < arguments.length; index++) {
+                    var nextSource = arguments[index];
+                    if (nextSource !== null && nextSource !== undefined) { 
+                        for (var nextKey in nextSource) {
+                            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                                to[nextKey] = nextSource[nextKey];
+                            }
+                        }
+                    }
+                }
+                return to;
+            };
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -56,16 +107,14 @@
         }
 
         .video-container {
-            position: fixed;
+            position: sticky;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            z-index: -1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            z-index: 1;
             overflow: hidden;
+            background-color: #000;
         }
 
         #v0 {
@@ -80,18 +129,9 @@
             object-fit: cover;
         }
 
-        #set-height {
-            position: relative;
-            z-index: 1;
-            /* Height will be set by JavaScript */
-        }
-
-        .content {
-            position: relative;
-            padding: 50px 0;
-            background-color: #fff;
-            color: #333;
-            z-index: 2;
+        .spacer {
+            height: 100vh;
+            width: 100%;
         }
 
         .intro-text {
@@ -104,6 +144,7 @@
             z-index: 2;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
             width: 80%;
+            pointer-events: none;
         }
 
         .intro-text h1 {
@@ -117,6 +158,15 @@
             margin: 0 auto;
         }
 
+        .gallery-section {
+            background-color: #fff;
+            color: #333;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
         .gallery {
             max-width: 1200px;
             margin: 0 auto;
@@ -127,13 +177,12 @@
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 40px;
-            color: #333;
         }
 
         .image-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 30px;
         }
 
         .image-item {
@@ -141,23 +190,63 @@
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
-            height: 300px;
             background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
         }
 
         .image-item:hover {
             transform: translateY(-10px);
         }
 
+        .image-container {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .image-item:hover .image-container img {
+            transform: scale(1.05);
+        }
+
         .placeholder-image {
             width: 100%;
-            height: 100%;
+            min-height: 200px;
             background: linear-gradient(45deg, #ff6b6b, #3a1c71);
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
             font-weight: bold;
+        }
+
+        .image-description {
+            padding: 15px;
+            background-color: white;
+            color: #333;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .image-description h3 {
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .image-description p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #666;
         }
 
         footer {
@@ -184,51 +273,86 @@
 </head>
 <body>
     <header>
-        <div class="logo">VideoScroll</div>
+        <div class="logo">刀柄組裝過程（向下滑動）</div>
         <nav>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="#">開始</a></li>
+                <li><a href="#gallery">我們的相片</a></li>
+
             </ul>
         </nav>
     </header>
 
     <div class="video-container">
-        <video id="v0" tabindex="0" autobuffer preload muted>
+        <video id="v0" tabindex="0" preload muted playsinline>
             <source type="video/mp4" src="https://zhao255.github.io/eld/Video%20Project2.mp4">
         </video>
+        <div class="intro-text">
+            <h1></h1>
+            <p></p>
+        </div>
     </div>
 
     <div id="set-height"></div>
 
-    <div class="intro-text">
-        <h1>Experience Smooth Scroll Video</h1>
-        <p>Scroll down to control the video playback. A modern web experience inspired by the latest design trends.</p>
-    </div>
-
-    <div class="content" id="gallery">
+    <div class="gallery-section" id="gallery">
         <div class="gallery">
-            <h2>Our Gallery</h2>
+            <h2>多謝愛姐😀</h2>
             <div class="image-grid">
                 <div class="image-item">
-                    <div class="placeholder-image">Image 1</div>
+                    <div class="image-container">
+                        <img src="https://zhao255.github.io/eld/Picture1.jpg" alt="準備材料">
+                    </div>
+                    <div class="image-description">
+                        <h3>很高興認識您</h3>
+                        <p>自從第一天我們就被您的正能量和笑容感染，您的笑容就是我們最大的動力，同時也希望您喜歡我們的作品。</p>
+                    </div>
                 </div>
                 <div class="image-item">
-                    <div class="placeholder-image">Image 2</div>
+                    <div class="image-container">
+                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="2">
+                    </div>
+                    <div class="image-description">
+                        <h3>我們的團隊</h3>
+                        <p>分別前您曾說過想要記得我們，記得這段經歷，我們也會記得您，記得您對我們的鼓勵，記得您的笑容。奈何天下沒有不散的宴席，有很多話我們並來不及和您說，借此機會，以下是我們寫給您的寄語。</p>
+                    </div>
                 </div>
                 <div class="image-item">
-                    <div class="placeholder-image">Image 3</div>
+                    <div class="image-container">
+                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="3">
+                    </div>
+                    <div class="image-description">
+                        <h3>name</h3>
+                        <p>content</p>
+                    </div>
                 </div>
                 <div class="image-item">
-                    <div class="placeholder-image">Image 4</div>
+                    <div class="image-container">
+                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="4">
+                    </div>
+                    <div class="image-description">
+
+                        <h3>Jack</h3>
+                        <p>這個網站會永久開放，刀柄壞了可以隨時回來看組裝過程哦🥰。真的非常感謝您願意陪我們參與學校的課程，我從您身上感受到了對生活的熱愛，對工作的熱情，對家人的愛，對朋友的關心。這些都是學校課程裏難以體會到的，您的參與讓我受益良多。最後，祝您身體健康，萬事如意。</p>
+                    </div>
                 </div>
                 <div class="image-item">
-                    <div class="placeholder-image">Image 5</div>
+                    <div class="image-container">
+                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="5">
+                    </div>
+                    <div class="image-description">
+                        <h3>name</h3>
+                        <p>content</p>
+                    </div>
                 </div>
                 <div class="image-item">
-                    <div class="placeholder-image">Image 6</div>
+                    <div class="image-container">
+                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="6">
+                    </div>
+                    <div class="image-description">
+                        <h3>name</h3>
+                        <p>content</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -239,27 +363,130 @@
     </footer>
 
     <script>
-        var frameNumber = 0, // start video at frame 0
-            // lower numbers = faster playback
-            playbackConst = 500, 
-            // get page height from video duration
-            setHeight = document.getElementById("set-height"), 
-            // select video element         
-            vid = document.getElementById('v0'); 
-
-        // dynamically set the page height according to video length
-        vid.addEventListener('loadedmetadata', function() {
-            setHeight.style.height = Math.floor(vid.duration) * playbackConst + "px";
+        document.addEventListener('DOMContentLoaded', function() {
+            var frameNumber = 0, // start video at frame 0
+                // lower numbers = faster playback
+                playbackConst = 500, 
+                // get page height from video duration
+                setHeight = document.getElementById("set-height"), 
+                // select video element         
+                vid = document.getElementById('v0');
+            
+            const gallerySection = document.querySelector('.gallery-section');
+            let isVideoLoaded = false;
+            let rafId = null;
+            
+            // Ensure gallery is initially hidden
+            gallerySection.style.opacity = '0';
+            
+            // Browser detection for special handling
+            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            var isIE = !!document.documentMode;
+            var isEdge = !isIE && !!window.StyleMedia;
+            
+            // Adjust video settings for mobile
+            if (isMobile) {
+                vid.setAttribute('playsinline', '');
+                vid.setAttribute('webkit-playsinline', '');
+            }
+            
+            // dynamically set the page height according to video length
+            vid.addEventListener('loadedmetadata', function() {
+                setHeight.style.height = Math.floor(vid.duration) * playbackConst + "px";
+                console.log("Video duration:", vid.duration, "seconds");
+                console.log("Page height set to:", setHeight.style.height);
+                
+                // For iOS, we need to play the video once to enable inline playback
+                if (isIOS) {
+                    vid.play().then(function() {
+                        setTimeout(function() {
+                            vid.pause();
+                            vid.currentTime = 0;
+                        }, 100);
+                    }).catch(function(err) {
+                        console.log("iOS autoplay error:", err);
+                    });
+                }
+            });
+            
+            // Use requestAnimationFrame for smooth playback
+            function scrollPlay() {  
+                var frameNumber = window.pageYOffset / playbackConst;
+                
+                // Ensure frameNumber doesn't exceed video duration
+                frameNumber = Math.min(frameNumber, vid.duration);
+                
+                // Check if we've reached the end of the video
+                if (frameNumber >= vid.duration - 0.1) {
+                    gallerySection.style.opacity = '1';
+                } else {
+                    gallerySection.style.opacity = '0';
+                }
+                
+                // Update video playback position
+                // Make sure the video is loaded before trying to set currentTime
+                if (isVideoLoaded && vid.readyState >= 2) {
+                    try {
+                        vid.currentTime = frameNumber;
+                    } catch (err) {
+                        console.log("Error setting video time:", err);
+                    }
+                }
+                
+                // Request next frame
+                rafId = window.requestAnimationFrame(scrollPlay);
+            }
+            
+            // Improve video preloading
+            vid.preload = "auto";
+            
+            // Start animation once video can play through
+            vid.addEventListener('canplaythrough', function() {
+                console.log("Video fully loaded and ready for smooth playback");
+                isVideoLoaded = true;
+                
+                // Cancel any existing animation frame
+                if (rafId) {
+                    window.cancelAnimationFrame(rafId);
+                }
+                
+                // Start the scroll-based playback
+                rafId = window.requestAnimationFrame(scrollPlay);
+            }, { once: true });
+            
+            // Alternative event for browsers that might not support canplaythrough properly
+            vid.addEventListener('loadeddata', function() {
+                if (!isVideoLoaded) {
+                    console.log("Using loadeddata as fallback");
+                    setTimeout(function() {
+                        isVideoLoaded = true;
+                        if (!rafId) {
+                            rafId = window.requestAnimationFrame(scrollPlay);
+                        }
+                    }, 1000);
+                }
+            }, { once: true });
+            
+            // Handle video loading errors
+            vid.addEventListener('error', function(e) {
+                console.log("Video loading error:", e);
+                // Try to recover
+                setTimeout(function() {
+                    vid.load();
+                }, 1000);
+            });
+            
+            // Cleanup on page unload to prevent memory leaks
+            window.addEventListener('beforeunload', function() {
+                if (rafId) {
+                    window.cancelAnimationFrame(rafId);
+                }
+            });
+            
+            // Preload the video
+            vid.load();
         });
-
-        // Use requestAnimationFrame for smooth playback
-        function scrollPlay(){  
-            var frameNumber = window.pageYOffset/playbackConst;
-            vid.currentTime = frameNumber;
-            window.requestAnimationFrame(scrollPlay);
-        }
-
-        window.requestAnimationFrame(scrollPlay);
     </script>
 </body>
 </html>
