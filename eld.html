@@ -65,7 +65,7 @@
         body {
             font-family: 'Arial', sans-serif;
             overflow-x: hidden;
-            background-color: #111;
+            background-color: #ffffff84;
             color: #fff;
         }
 
@@ -74,6 +74,7 @@
             top: 0;
             left: 0;
             width: 100%;
+            background-color: #4a6fa5;
             padding: 20px;
             z-index: 1000;
             display: flex;
@@ -84,7 +85,11 @@
         .logo {
             font-size: 24px;
             font-weight: bold;
-            color: #000000;
+            color: #ffffff;
+         
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
         }
 
         nav ul {
@@ -101,6 +106,10 @@
             font-weight: bold;
             text-decoration: none;
             transition: color 0.3s ease;
+            background-color: #00ddff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
         }
 
         nav ul li a:hover {
@@ -109,10 +118,12 @@
 
         .video-container {
             position: sticky;
-            top: 0;
-            left: 0;
+            top: 10%;
+            left: 5%;
             width: 100%;
             height: 100vh;
+            display: flex;
+            justify-content: center;
             z-index: 1;
             overflow: hidden;
             background-color: #000;
