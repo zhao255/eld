@@ -139,6 +139,8 @@
             height: auto;
             transform: translate(-50%, -50%);
             object-fit: cover;
+            max-width: 100vw;
+            max-height: 100vh;
         }
 
         .spacer {
@@ -193,7 +195,7 @@
 
         .image-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(1, minmax(300px, 1fr));
             gap: 30px;
         }
 
@@ -310,60 +312,61 @@
     <div class="gallery-section" id="gallery">
         <div class="gallery">
             <h2>多謝愛姐😀</h2>
-            <div class="image-grid">
-                <div class="image-item">
+            <div class="image-grid">              
+                <div class="image-item" style="width: 100%; max-width: 100%; grid-column: 1 / -1;">
                     <div class="image-container">
-                        <img src="https://zhao255.github.io/eld/Picture1.jpg" alt="準備材料">
-                    </div>
-                    <div class="image-description">
-                        <h3>很高興認識您</h3>
-                        <p>自從第一天我們就被您的正能量和笑容感染，您的笑容就是我們最大的動力，同時也希望您喜歡我們的作品。</p>
-                    </div>
-                </div>
-                <div class="image-item">
-                    <div class="image-container">
-                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="2">
+                        <img src="https://zhao255.github.io/eld/Group_3.jpg" alt="2" style="width: 100%; object-fit: cover;">
                     </div>
                     <div class="image-description">
                         <h3>我們的團隊</h3>
                         <p>分別前您曾說過想要記得我們，記得這段經歷，我們也會記得您，記得您對我們的鼓勵，記得您的笑容。奈何天下沒有不散的宴席，有很多話我們並來不及和您說，借此機會，以下是我們寫給您的寄語。</p>
                     </div>
                 </div>
-                <div class="image-item">
-                    <div class="image-container">
-                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="3">
+              
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; margin: 20px 0; grid-column: 1 / -1;">
+                    <div class="image-item">
+                        <div class="image-container">
+                        </div>
+                        <div class="image-description">
+                            <h3>鄭航清 Izzles (左數第一個)</h3>
+                            <p>真的很感謝愛姐參與課程，讓我們有機會為您設計產品，不但讓我們在設計過程中學到不少東西，為您設計更好的產品，而且透過了解您的背景及需要，讓我們更了解並學會關心和服務社會。這次的經驗，我會好好地把它放在心裡，也祝福您平平安安、身體健康。</p>
+                        </div>
                     </div>
-                    <div class="image-description">
-                        <h3>name</h3>
-                        <p>content</p>
+                    <div class="image-item">
+                        <div class="image-container">
+                            
+                        </div>
+                        <div class="image-description">
+                            <h3>潘文曦 (左數第二個)</h3>
+                            <p>感謝愛姐給予我們機會參與日常生活工具及產品的設計工作。這不僅讓我們得以將課堂理論轉化為實踐，更透過您分享的寶貴經驗，幫助我們深刻理解真實用戶的需求與痛點，令我們受益匪淺。 再次感謝您的全程提點與支持，衷心祝福您一切順遂、安康常伴！</p>
+                        </div>
+                    </div>
+                    <div class="image-item">
+                        <div class="image-container">
+                            
+                        </div>
+                        <div class="image-description">
+                            <h3>林濼徽 Liz (左數第三個)</h3>
+                            <p>十分感謝愛姐願意與我們促膝長談，向我們敍說自己的故事和生活，讓我們可以了解您、為您設計產品。我們在設計過程中得到不少經驗，也學會如何關懷身邊的人，讓我們深深體會到關心和服務社會過程中的振奮感。我們將會銘記這次的經歷。希望您能身體健康，長命百歲</p>
+                        </div>
+                    </div>
+                    <div class="image-item">
+                        <div class="image-container">
+            
+                        </div>
+                        <div class="image-description">
+                            <h3>Jack (左數第四個)</h3>
+                            <p>這個網站會永久開放，刀柄壞了可以隨時回來看組裝過程哦🥰。真的非常感謝您願意陪我們參與學校的課程，我從您身上感受到了對生活的熱愛，對工作的熱情，對家人的愛，對朋友的關心。這些都是學校課程裏難以體會到的，您的參與讓我受益良多。最後，祝您身體健康，萬事如意。</p>
+                        </div>
                     </div>
                 </div>
-                <div class="image-item">
+                <div class="image-item" style="margin: 0 auto; max-width: 600px; grid-column: 1 / -1; width: 100%; clear: both;">
                     <div class="image-container">
-                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="4">
+                        <img src="https://zhao255.github.io/eld/Pic1.jpg" alt="準備材料">
                     </div>
                     <div class="image-description">
-
-                        <h3>Jack</h3>
-                        <p>這個網站會永久開放，刀柄壞了可以隨時回來看組裝過程哦🥰。真的非常感謝您願意陪我們參與學校的課程，我從您身上感受到了對生活的熱愛，對工作的熱情，對家人的愛，對朋友的關心。這些都是學校課程裏難以體會到的，您的參與讓我受益良多。最後，祝您身體健康，萬事如意。</p>
-                    </div>
-                </div>
-                <div class="image-item">
-                    <div class="image-container">
-                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="5">
-                    </div>
-                    <div class="image-description">
-                        <h3>name</h3>
-                        <p>content</p>
-                    </div>
-                </div>
-                <div class="image-item">
-                    <div class="image-container">
-                        <img src="https://zhao255.github.io/eld/Picture.jpg" alt="6">
-                    </div>
-                    <div class="image-description">
-                        <h3>name</h3>
-                        <p>content</p>
+                        <h3>很高興認識您</h3>
+                        <p>自從第一天我們就被您的正能量和笑容感染，您的笑容就是我們最大的動力，同時也希望您喜歡我們的作品。</p>
                     </div>
                 </div>
             </div>
@@ -402,6 +405,28 @@
                 vid.setAttribute('playsinline', '');
                 vid.setAttribute('webkit-playsinline', '');
             }
+            
+            // Handle resize events for responsive video
+            function resizeVideo() {
+                const container = document.querySelector('.video-container');
+                const containerWidth = container.offsetWidth;
+                const containerHeight = container.offsetHeight;
+                const aspectRatio = 16/9; // Standard video aspect ratio
+                
+                if (containerWidth / containerHeight > aspectRatio) {
+                    // If container is wider than video aspect ratio
+                    vid.style.width = '100%';
+                    vid.style.height = 'auto';
+                } else {
+                    // If container is taller than video aspect ratio
+                    vid.style.width = 'auto';
+                    vid.style.height = '100%';
+                }
+            }
+            
+            // Call resize on page load and window resize
+            resizeVideo();
+            window.addEventListener('resize', resizeVideo);
             
             // dynamically set the page height according to video length
             vid.addEventListener('loadedmetadata', function() {
